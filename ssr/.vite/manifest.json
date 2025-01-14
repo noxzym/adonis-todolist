@@ -1,0 +1,42 @@
+{
+  "_home-DJ0oNC4G.js": {
+    "file": "home-DJ0oNC4G.js",
+    "name": "home",
+    "isDynamicEntry": true
+  },
+  "_not_found-Djv2od_e.js": {
+    "file": "not_found-Djv2od_e.js",
+    "name": "not_found",
+    "isDynamicEntry": true
+  },
+  "_server_error-Cgc8nwHe.js": {
+    "file": "server_error-Cgc8nwHe.js",
+    "name": "server_error",
+    "isDynamicEntry": true
+  },
+  "inertia/app/app.tsx": {
+    "file": "app.js",
+    "name": "app",
+    "src": "inertia/app/app.tsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "_not_found-Djv2od_e.js",
+      "_server_error-Cgc8nwHe.js",
+      "_home-DJ0oNC4G.js"
+    ],
+    "css": [
+      "app-D-QH9JEi.css"
+    ]
+  },
+  "inertia/app/ssr.tsx": {
+    "file": "ssr.js",
+    "name": "ssr",
+    "src": "inertia/app/ssr.tsx",
+    "isEntry": true,
+    "imports": [
+      "_not_found-Djv2od_e.js",
+      "_server_error-Cgc8nwHe.js",
+      "_home-DJ0oNC4G.js"
+    ]
+  }
+}
