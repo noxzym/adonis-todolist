@@ -15,15 +15,20 @@
 
 ### Steps (Development)
 
-1. Create database first
-2. Fill the .env file with your database credentials
-3. Run `pnpm install`
-4. Run migration with `node ace migrate:run`
-5. Run `pnpm dev`
+1. Buat database terlebih dahulu
+2. Isikan konfigurasi database pada file `.env`
+3. Jalankan `pnpm install`
+4. Jalankan migrasi dengan `node ace migrate:run`
+5. Jalankan `pnpm dev`
 
 ### Steps (Production)
 
-1. Run `pnpm build`
-2. Run `pnpm install --prod`
-3. Move `/inertia`, `tailwind.config.js`, and `.env` to `/build` folder
-4. Run `pnpm start`
+1. Buat database terlebih dahulu
+2. Isikan konfigurasi database pada file `.env`
+3. Jalankan `pnpm install`
+4. Jalankan migrasi dengan `node ace migrate:run`
+5. Jalankan `pnpm build`
+6. Masuk kedalam folder build dengan `cd build`
+7. Jalankan `pnpm install --prod`
+8. Pindahkan folder `inertia` dan file `.env` ke dalam folder `build`
+9. Jalankan `pnpm start`
