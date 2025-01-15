@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 export default function Home() {
   const [state, setState] = useState<'list' | 'create' | 'edit'>('list')
   const [todos, setTodos] = useState<Task[]>([])
+  const [searchQuery, setSearchQuery] = useState<string>('')
   const [edit, setEdit] = useState<Task | null>(null)
 
   async function fetchTodos() {
@@ -22,39 +23,38 @@ export default function Home() {
     setState(button.id as 'list' | 'create' | 'edit')
   }
 
-  async function onDelete(id: number) {
+  async function handleDeleteButton(id: number) {
     await fetch(`/api/todos/${id}`, { method: 'DELETE' })
     await fetchTodos()
   }
 
-  async function onUpdate(id: number) {
+  async function handleEditButton(id: number) {
     setEdit(todos.find((todo) => todo.id === id)!)
     setState('edit')
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-
     const form = event.currentTarget
     const title = (form.title as unknown as HTMLInputElement).value
-    const isCompleted = form.isCompleted.checked
-
+    const is_completed = form.is_completed.checked
     await fetch(`/api/todos${state === 'edit' ? `/${edit!.id}` : ''}`, {
       method: state === 'edit' ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, isCompleted }),
+      body: JSON.stringify({ title, isCompleted: is_completed }),
     })
-
     await fetchTodos()
-
     setEdit(null)
     setState('list')
   }
 
+  const filteredTodos = todos.filter((todo) =>
+    todo.title.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
   return (
     <>
       <Head title="Homepage" />
-
       <div className="flex flex-col justify-center items-center w-full h-full">
         <h1 className="text-6xl font-medium text-[#5a45ff] mb-12">Todo-List App</h1>
         <div className="flex flex-col p-5 gap-2 bg-[#5a45ff] w-full max-w-4xl rounded-xl">
@@ -76,36 +76,45 @@ export default function Home() {
           </div>
           <hr />
           {state === 'list' ? (
-            <div className="flex flex-col bg-[#f9f9f9] rounded-md p-2 min-h-10">
-              {todos.length ? (
-                todos.map((todo, i) => (
-                  <div
-                    key={todo.id}
-                    className="flex justify-between items-center p-2 border-[#5a45ff]"
-                  >
-                    <p className="font-medium">
-                      {++i}. {todo.title} ({todo.isCompleted ? 'Completed' : 'Not Completed'})
-                    </p>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => onUpdate(todo.id)}
-                        className="p-2 bg-[#5a45ff] text-white rounded-md"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => onDelete(todo.id)}
-                        className="p-2 bg-red-700 text-white rounded-md"
-                      >
-                        Delete
-                      </button>
+            <>
+              <input
+                type="text"
+                placeholder="Search tasks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="p-2 rounded-md border-[1px] w-full"
+              />
+              <div className="flex flex-col bg-[#f9f9f9] rounded-md p-2 min-h-10">
+                {filteredTodos.length ? (
+                  filteredTodos.map((todo, i) => (
+                    <div
+                      key={todo.id}
+                      className="flex justify-between items-center p-2 border-[#5a45ff]"
+                    >
+                      <p className="font-medium">
+                        {++i}. {todo.title} ({todo.isCompleted ? 'Completed' : 'Not Completed'})
+                      </p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleEditButton(todo.id)}
+                          className="p-2 bg-[#5a45ff] text-white rounded-md"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteButton(todo.id)}
+                          className="p-2 bg-red-700 text-white rounded-md"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-center font-medium">Task Empty</p>
-              )}
-            </div>
+                  ))
+                ) : (
+                  <p className="text-center font-medium">Task Empty</p>
+                )}
+              </div>
+            </>
           ) : (
             <form
               onSubmit={handleSubmit}
@@ -121,8 +130,8 @@ export default function Home() {
               />
               <div className="flex">
                 <input
-                  name="isCompleted"
-                  id="isCompleted"
+                  name="is_completed"
+                  id="is_completed"
                   type="checkbox"
                   checked={edit?.isCompleted}
                   onChange={(x) =>
@@ -131,7 +140,7 @@ export default function Home() {
                   className="peer hidden"
                 />
                 <label
-                  htmlFor="isCompleted"
+                  htmlFor="is_completed"
                   className="select-none cursor-pointer rounded-lg border-2 py-2 px-4 font-medium transition-colors duration-200 ease-in-out peer-checked:bg-[#5a45ff] peer-checked:text-[#f9f9f9] peer-checked:border-gray-200"
                 >
                   Completed
